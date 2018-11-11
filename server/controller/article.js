@@ -30,30 +30,52 @@ class ArticleController {
     static async deleteArticle (ctx) {
         
     }
+    //更新文章
     static async updateArticle (ctx) {
-        let verifyTk = await common.verifyToken(ctx);
-        const data = ctx.request.body;
-        console.log('updateArticle')
-        if (verifyTk === true) {
-            let articles = await ArticleModel.updateArticle(data);
-            if (articles) {
-                ctx.body = {
-                    message: '文章更新成功',
-                    cc: 0,
-                    data: articles                  
+            let verifyTk = await common.verifyToken(ctx);
+            const data = ctx.request.body;
+            if (verifyTk === true) {
+                let articles = await ArticleModel.updateArticle(data);
+                if (articles) {
+                    ctx.body = {
+                        message: '文章更新成功',    
+                        cc: 0,
+                        data: articles                  
+                    }
+                } else {
+                    ctx.body = {
+                        message: '文章更新失败',
+                        cc: 1
+                    }
                 }
-            } else {
-                ctx.body = {
-                    message: '文章更新失败',
-                    cc: 1
+            }else {
+                let user_view_ip =  
+                ctx.req.headers['x-forwarded-for'] ||
+                ctx.req.connection.remoteAddress ||
+                ctx.req.socket.remoteAddress ||
+                ctx.req.connection.socket.remoteAddress;
+                let data = {
+                    _id: ctx.request.body._id,
+                    page_view_time: ctx.request.body.page_view_time,
+                    page_view_count: ctx.request.body.page_view_count,
+                    user_view_ip: user_view_ip
                 }
+                let articles = await ArticleModel.updateArticle(data ,false);
+                if (articles) {
+                    ctx.body = {
+                        message: '文章PV更新成功',
+                        cc: 0,
+                    }
+                } else {
+                    ctx.body = {
+                        message: '文章PV更新失败',
+                        cc: 1
+                    }
+                }            
             }
-        }        
     }
+    //查询文章
     static async queryArticle (ctx) {
-        console.log('queryArticle')
-        // let verifyTk = await common.verifyToken(ctx);
-        // console.log('verifyTk', verifyTk)
         const data = ctx.request.body;
         let id = data.id ? data.id : undefined;
         let limit = data.limit ? data.limit : -1;
@@ -72,6 +94,6 @@ class ArticleController {
                 cc: 0
             }            
         }
-    }    
+    }
 }
 module.exports = ArticleController

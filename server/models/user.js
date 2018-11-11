@@ -54,13 +54,8 @@ class UserModel {
      * @returns {Promise.<boolean>}
      */
     static async updateUser(name, data) {
-        console.log('wcx22226', name);
-        // let payload = await verify(token, secret.sign);
-        console.log('test', 1111);
-        // let name = payload.name;
         let conditions = { name };
         let update = { $set: data };//要更新的数据
-        console.log('update', update);
         return await _models.update(conditions, update, function (err, res) {
             if (err) {
                 console.log('err', err)

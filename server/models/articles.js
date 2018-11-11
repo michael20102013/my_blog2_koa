@@ -46,28 +46,35 @@ class ArticleModel {
     }
     /**
      * 更新一条文章数据
-     * @param id, data
+     * @param data
      * @returns {Promise.<boolean>}
      */
-    static async updateArticle(data) {
+    static async updateArticle(data, boolean = true) {
         console.log('data._id', data._id)
         let conditions = { _id: mongoose.Types.ObjectId(data._id) };
-        // let conditions = mongoose.Types.ObjectId(data._id);
-        let update = { $set: {
-            content:data.content,
-            update_time:data.update_time,
-            title:data.title
-        } };//要更新的数据
-        // return await articles.findByIdAndUpdate(conditions, update, {}, (err, res) => {
-        //     if (err) {
-        //         console.log('err', err)
-        //         return false;
-        //     } else {
-        //         return true;
-        //     }
-        // })
+        if(boolean) {
+            let setjson = {};
+            data.content && (setjson.content = data.content);
+            data.update_time && (setjson.update_time = data.update_time);
+            data.title && (setjson.title = data.title);
 
-        return await articles.findByIdAndUpdate(conditions, update, {new:true})        
+            let setupdate = { $set: setjson };
+            return await articles.findByIdAndUpdate(conditions, setupdate, {new:true});
+        }else {
+            //增操作
+            let pushjson = {};
+            //改操作
+            let setjson = {};
+            data.page_view_count && (setjson.page_view_count = data.page_view_count);
+            data.page_view_time && (pushjson.page_view_time = data.page_view_time);
+            data.user_view_ip && (pushjson.user_view = data.user_view_ip);
+            console.log('pushjson', pushjson)
+            console.log('setjson', setjson)
+            let pushupdate = { $push: pushjson };
+            let setupdate = { $set: setjson };
+            articles.findByIdAndUpdate(conditions, pushupdate, {new:true});
+            return await articles.findByIdAndUpdate(conditions, setupdate, {new:true});
+        }
     }
     /**
      * 查询文章数据
@@ -76,6 +83,7 @@ class ArticleModel {
      */
     static async queryArticles(id, _limit, _skip) {
         let conditions = id ? {_id: mongoose.Types.ObjectId(id)} : {};
+        console.log('conditions', conditions)
         if(_limit === -1) {
             return await articles.find(conditions, null, {new:true}, function (err, docs) {
                 if (err) {

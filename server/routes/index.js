@@ -9,7 +9,8 @@ router.post('/', UserController.postLogin)
 router.post('/login', UserController.postLogin)
 router.post('/login_out', UserController.loginOut)
 //前端文章处理
-router.post('/see/articles', ArticleController.queryArticle)
+router.post('/see/articles', ArticleController.queryArticle);
+router.put('/pageview/articles', ArticleController.updateArticle);
 //后台文章处理
 router.post('/edit/articles', ArticleController.createArticle)
 router.delete('/edit/articles', ArticleController.deleteArticle)
