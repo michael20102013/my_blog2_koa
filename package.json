@@ -28,8 +28,7 @@
     "koa-router": "^7.4.0",
     "mongoose": "^5.1.5"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
