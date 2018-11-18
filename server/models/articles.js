@@ -68,14 +68,26 @@ class ArticleModel {
             data.page_view_count && (setjson.page_view_count = data.page_view_count);
             data.page_view_time && (pushjson.page_view_time = data.page_view_time);
             data.user_view_ip && (pushjson.user_view = data.user_view_ip);
-            console.log('pushjson', pushjson)
-            console.log('setjson', setjson)
-            let pushupdate = { $push: pushjson };
+            let pushupdate = { $addToSet: pushjson };
             let setupdate = { $set: setjson };
-            articles.findByIdAndUpdate(conditions, pushupdate, {new:true});
+            await articles.findByIdAndUpdate(conditions, pushupdate, {new:true});
             return await articles.findByIdAndUpdate(conditions, setupdate, {new:true});
         }
     }
+    /**
+     * 评论文章
+     * @param data
+     * @returns {Promise.<boolean>}
+     */
+    static async commentArticle(data) {
+        let conditions = { _id: mongoose.Types.ObjectId(data._id) };
+        let pushjson = {};
+        data.comment && (pushjson.comment = data.comment);
+        console.log('pushjson', pushjson)
+        let pushupdate = { $addToSet: pushjson };
+        return await articles.findByIdAndUpdate(conditions, pushupdate, {new:true});
+    }
+     
     /**
      * 查询文章数据
      * @param id

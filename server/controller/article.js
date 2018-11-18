@@ -74,6 +74,26 @@ class ArticleController {
                 }            
             }
     }
+    //评论文章
+    static async commentArticle(ctx) {
+        let data = {
+            _id: ctx.request.body._id,
+            comment: ctx.request.body.comment
+        }
+        let comments = await ArticleModel.commentArticle(data);
+        if(comments) {
+            ctx.body = {
+                message: '评论成功',
+                data: comments,
+                cc: 0
+            }
+        }else {
+            ctx.body = {
+                message: '评论失败',
+                cc: 1
+            }
+        }   
+    }
     //查询文章
     static async queryArticle (ctx) {
         const data = ctx.request.body;
