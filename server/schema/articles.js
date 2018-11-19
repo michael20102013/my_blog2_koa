@@ -9,7 +9,9 @@ const articleSchema = mongoose.Schema({
 	page_view_count: Number,
 	page_view_time: [],
 	user_view:[],
-	comment:[]
+	user_view_count:Number,
+	comment:[],
+	comment_count: Number
 
 })
 module.exports = articleSchema

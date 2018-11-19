@@ -48,31 +48,44 @@ class ArticleController {
                         cc: 1
                     }
                 }
-            }else {
-                let user_view_ip =  
+            }else {}
+    }
+    //设置PV 和 UV 信息
+    static async setPVandUV(ctx) {
+        let verifyTk = await common.verifyToken(ctx);
+        console.log('verifyTk', verifyTk)
+        //只有未登录才有统计
+        if (verifyTk === false) {
+            let user_view_ip =
                 ctx.req.headers['x-forwarded-for'] ||
                 ctx.req.connection.remoteAddress ||
                 ctx.req.socket.remoteAddress ||
                 ctx.req.connection.socket.remoteAddress;
-                let data = {
-                    _id: ctx.request.body._id,
-                    page_view_time: ctx.request.body.page_view_time,
-                    page_view_count: ctx.request.body.page_view_count,
-                    user_view_ip: user_view_ip
-                }
-                let articles = await ArticleModel.updateArticle(data ,false);
-                if (articles) {
-                    ctx.body = {
-                        message: '文章PV更新成功',
-                        cc: 0,
-                    }
-                } else {
-                    ctx.body = {
-                        message: '文章PV更新失败',
-                        cc: 1
-                    }
-                }            
+            let data = {
+                _id: ctx.request.body._id,
+                page_view_time: ctx.request.body.page_view_time,
+                page_view_count: ctx.request.body.page_view_count,
+                user_view_ip: user_view_ip,
+                user_view_count: ctx.request.body.user_view_count
             }
+            let articles = await ArticleModel.setPVandUV(data, false);
+            if (articles) {
+                ctx.body = {
+                    message: '文章PV更新成功',
+                    cc: 0,
+                }
+            } else {
+                ctx.body = {
+                    message: '文章PV更新失败',
+                    cc: 1
+                }
+            }
+        }else {
+            ctx.body = {
+                message: '登录用户不设置PV和UV',
+                cc: 1,
+            }            
+        }
     }
     //评论文章
     static async commentArticle(ctx) {

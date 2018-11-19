@@ -10,7 +10,7 @@ router.post('/login', UserController.postLogin)
 router.post('/login_out', UserController.loginOut)
 //无需登录的处理
 router.post('/see/articles', ArticleController.queryArticle);
-router.put('/pageview/articles', ArticleController.updateArticle);
+router.put('/pageview/articles', ArticleController.setPVandUV);
 router.post('/comment', ArticleController.commentArticle);
 //需登录的处理
 router.post('/edit/articles', ArticleController.createArticle)
