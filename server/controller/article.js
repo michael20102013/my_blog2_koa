@@ -1,15 +1,13 @@
 const ArticleModel = require('../models/articles.js');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const secret = require('../config/secret.json');
 const util = require('util');
 const verify = util.promisify(jwt.verify);
-const common = require('../common/common.js')
+const commonObj = require('../common/common.js')
 class ArticleController {
     //增加文章
     static async createArticle (ctx) {
         const data = ctx.request.body;
-        let verifyTk = await common.verifyToken(ctx);
+        let verifyTk = await commonObj.verifyToken(ctx);
         if(verifyTk === true){
             let addArticle = await ArticleModel.createArticle(data)
             if(addArticle){
@@ -32,7 +30,7 @@ class ArticleController {
     }
     //更新文章
     static async updateArticle (ctx) {
-            let verifyTk = await common.verifyToken(ctx);
+            let verifyTk = await commonObj.verifyToken(ctx);
             const data = ctx.request.body;
             if (verifyTk === true) {
                 let articles = await ArticleModel.updateArticle(data);
@@ -52,8 +50,7 @@ class ArticleController {
     }
     //设置PV 和 UV 信息
     static async setPVandUV(ctx) {
-        let verifyTk = await common.verifyToken(ctx);
-        console.log('verifyTk', verifyTk)
+        let verifyTk = await commonObj.verifyToken(ctx);
         //只有未登录才有统计
         if (verifyTk === false) {
             let user_view_ip =
@@ -61,14 +58,15 @@ class ArticleController {
                 ctx.req.connection.remoteAddress ||
                 ctx.req.socket.remoteAddress ||
                 ctx.req.connection.socket.remoteAddress;
+            let article = await ArticleModel.queryArticles(ctx.request.body._id, 1, 0);
+            let t = new commonObj.MYTime(this);
             let data = {
                 _id: ctx.request.body._id,
-                page_view_time: ctx.request.body.page_view_time,
-                page_view_count: ctx.request.body.page_view_count,
-                user_view_ip: user_view_ip,
-                user_view_count: ctx.request.body.user_view_count
+                page_view_time: t.time(),
+                page_view_count: article[0].page_view_count + 1,
+                user_view_ip: user_view_ip
             }
-            let articles = await ArticleModel.setPVandUV(data, false);
+            let articles = await ArticleModel.setPVandUV(data);
             if (articles) {
                 ctx.body = {
                     message: '文章PV更新成功',
@@ -89,15 +87,19 @@ class ArticleController {
     }
     //评论文章
     static async commentArticle(ctx) {
+        let id = ctx.request.body._id;
+        let article = await ArticleModel.queryArticles(id, 1, 0);
+        let comment_count = parseInt(article[0].comment_count) + 1;
         let data = {
-            _id: ctx.request.body._id,
-            comment: ctx.request.body.comment
+            _id: id,
+            comment: ctx.request.body.comment,
+            comment_count: comment_count
         }
         let comments = await ArticleModel.commentArticle(data);
         if(comments) {
             ctx.body = {
                 message: '评论成功',
-                data: comments,
+                articles: comments,
                 cc: 0
             }
         }else {
@@ -114,6 +116,9 @@ class ArticleController {
         let limit = data.limit ? data.limit : -1;
         let skip = data.skip ? data.skip : 0; 
         let articles = await ArticleModel.queryArticles(id, limit, skip);
+        articles.forEach((item, index) => {
+            item.user_view_count = item.user_view.length
+        })
         if (articles) {
             ctx.body = {
                 message: '文章查询成功',

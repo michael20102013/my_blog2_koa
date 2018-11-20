@@ -49,7 +49,6 @@ class ArticleModel {
      */
     static async updateArticle(data) {
         let conditions = { _id: mongoose.Types.ObjectId(data._id) };
-        if(boolean) {
             let setjson = {};
             data.content && (setjson.content = data.content);
             data.update_time && (setjson.update_time = data.update_time);
@@ -57,7 +56,6 @@ class ArticleModel {
 
             let setupdate = { $set: setjson };
             return await articles.findByIdAndUpdate(conditions, setupdate, {new:true});
-        }else {}
     }
     /**
      * 设置PV 和 UV
@@ -76,8 +74,6 @@ class ArticleModel {
         data.page_view_time && (pushjson.page_view_time = data.page_view_time);
         //uv ip
         data.user_view_ip && (pushjson.user_view = data.user_view_ip);
-        //uv 总量
-        data.user_view_count && (setjson.user_view_count = data.user_view_count);
         let pushupdate = { $addToSet: pushjson };
         let setupdate = { $set: setjson };
         await articles.findByIdAndUpdate(conditions, pushupdate, { new: true });
@@ -92,9 +88,13 @@ class ArticleModel {
     static async commentArticle(data) {
         let conditions = { _id: mongoose.Types.ObjectId(data._id) };
         let pushjson = {};
+        let setjson = {};
         data.comment && (pushjson.comment = data.comment);
+        data.comment_count && (setjson.comment_count = data.comment_count);
         let pushupdate = { $addToSet: pushjson };
-        return await articles.findByIdAndUpdate(conditions, pushupdate, {new:true});
+        let setupdate = { $set: setjson };
+        await articles.findByIdAndUpdate(conditions, pushupdate, {new:true});
+        return await articles.findByIdAndUpdate(conditions, setupdate, {new:true});
     }
      
     /**
