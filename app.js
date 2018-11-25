@@ -8,9 +8,10 @@ const err = require('./server/middleware/error.js');
 const app = new Koa();
 
 // app.use(jwt({secret: secret.sign}).unless({path: [/^\/api\/login/]}));
-app.use(err())
+app
     .use(logger())
     .use(bodyParser())
+    .use(err())
     .use(jwt({secret: secret.sign}).unless({
         path: [
             /^\/api\/login/, 
@@ -19,9 +20,9 @@ app.use(err())
             /^\/api\/pageview/,
             /^\/api\/comment/
         ]
-    }));
-app
-   .use(router.routes())
+    }))
+    
+app.use(router.routes())
    .use(router.allowedMethods())
 
 app.listen(9527, ()=> {

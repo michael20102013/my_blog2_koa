@@ -112,6 +112,7 @@ class ArticleController {
     //查询文章
     static async queryArticle (ctx) {
         const data = ctx.request.body;
+        let verifyTk = await commonObj.verifyToken(ctx);
         let id = data.id ? data.id : undefined;
         let limit = data.limit ? data.limit : -1;
         let skip = data.skip ? data.skip : 0; 
@@ -123,14 +124,15 @@ class ArticleController {
             ctx.body = {
                 message: '文章查询成功',
                 data: articles,
-                cc: 0
+                cc: 0,
+                islogin: verifyTk
             }
         }else{
             ctx.body = {
-                message: '文章查询成功',
-                data: articles,
-                cc: 0
-            }            
+                message: '文章查询失败',
+                cc: 1,
+                islogin: verifyTk
+            }
         }
     }
 }

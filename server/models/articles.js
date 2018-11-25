@@ -50,7 +50,8 @@ class ArticleModel {
     static async updateArticle(data) {
         let conditions = { _id: mongoose.Types.ObjectId(data._id) };
             let setjson = {};
-            data.content && (setjson.content = data.content);
+            data.md_content && (setjson.md_content = data.md_content);
+            data.html_content && (setjson.html_content = data.html_content);
             data.update_time && (setjson.update_time = data.update_time);
             data.title && (setjson.title = data.title);
 

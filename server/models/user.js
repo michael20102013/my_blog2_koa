@@ -61,7 +61,6 @@ class UserModel {
                 console.log('err', err)
                 return false;
             } else {
-                console.log(res);
                 console.log(`update ${name} succcess`);
                 return true;
             }
@@ -74,7 +73,6 @@ class UserModel {
      */
     static async queryUser(name) {
         console.log('entering db')
-        console.log('name',name)
         return await _models.find({ name: name }, function (err, docs) {
             if (err) {
                 console.log(err);

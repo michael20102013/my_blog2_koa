@@ -27,7 +27,7 @@ class UserController {
                     id: user.id
                 }
                 // 签发 token
-                const token = jwt.sign(userToken, secret.sign, {expiresIn: '2 days'})
+                const token = jwt.sign(userToken, secret.sign, {expiresIn: 3600 * 24 * 30})
                 let data = {'token':token};
                 //把token存储到数据库
                 // UserModel.updateUser(token,data);
@@ -61,18 +61,8 @@ class UserController {
     static async loginOut (ctx) {
         let token = ctx.request.header.authorization.split(' ')[1];
         let data = {token:"null"};
-        // let verifyTk = await common.verifyToken(ctx);
-        // console.log('verifyTk',verifyTk);
-        // if(verifyTk === true){
-            // try{
-            //     let payload = await verify(token, secret.sign);
-            // }
-            // catch(err){
-            //     console.log(err.status);
-            // }
             let payload = await verify(token, secret.sign);
             let upTk = await UserModel.updateUser(payload.name, data);
-            console.log('upTk',upTk)
             if(upTk){
                 ctx.body = {
                     message:'登出成功',
@@ -86,45 +76,26 @@ class UserController {
                     token
                 }                
             }
-        // }else{
-            // throw(ctx.throw(401));
-        // }
-
-        // common.verifyToken(ctx).then((res)=>{
-        //     if(res === true){
-        //         if(UserModel.updateUser(token,data)){
-        //             ctx.body = {
-        //                 message:'登出成功',
-        //                 cc:0,
-        //                 token
-        //             }
-        //         }else{
-        //             ctx.body = {
-        //                 message:'登出失败',
-        //                 cc:1,
-        //                 token
-        //             }
-        //         }
-        //     }else{
-        //         throw(ctx.throw(401));
-        //     }
-        // })
     }
     static async judgeJWT(ctx){
         // let token = ctx.request.header.authorization.split(' ')[1];
-        let verifyTk = await common.verifyToken(ctx);
-        if(verifyTk === true){
-            ctx.body = {
-                message:'登录状态未失效',
-                cc:0
-            }             
-        }
-        else{
-            ctx.body = {
-                message:'登录状态已失效',
-                cc:1
-            }             
-        }
+        // let verifyTk = await common.verifyToken(ctx);
+        // if(verifyTk === true){
+        //     ctx.body = {
+        //         message:'登录状态未失效',
+        //         cc:0
+        //     }             
+        // }
+        // else{
+        //     ctx.body = {
+        //         message:'登录状态已失效',
+        //         cc:1
+        //     }             
+        // }
+        ctx.body = {
+            message:'登录状态未失效',
+            cc:0
+        }         
     }
     static async test(ctx){
         ctx.body = {
