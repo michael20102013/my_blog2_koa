@@ -147,14 +147,15 @@ class ArticleController {
         console.log("ctx.request.files['image']['name']", ctx.request.files['image']['name'])
         // console.log('__dirname', __dirname)
         const reader = fs.createReadStream(ctx.request.files['image']['path']);
-        let filePath = `http://www.iwangcx.com:8887/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
+        let filePath = `/shareSource/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
+        let remotefilePath = `http://www.iwangcx.com:8887/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
         console.log('filePath', filePath);
         // 创建可写流
         const upStream = fs.createWriteStream(filePath);
         // 可读流通过管道写入可写流
         reader.pipe(upStream);
         return ctx.body = {
-            url: filePath,
+            url: remotefilePath,
             message: "文件上传成功",
             cc: 0
         }   
