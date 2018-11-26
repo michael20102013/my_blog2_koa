@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 const secret = require('../config/secret.json');
 const util = require('util');
 const verify = util.promisify(jwt.verify);
-const common = require('../common/common.js')
 class UserController {
     static async postLogin (ctx) {
         const data = ctx.request.body;
@@ -27,7 +26,7 @@ class UserController {
                     id: user.id
                 }
                 // 签发 token
-                const token = jwt.sign(userToken, secret.sign, {expiresIn: 3600 * 24 * 30})
+                const token = jwt.sign(userToken, secret.sign, {expiresIn: 3600 * 24 * 30 * 12 * 10})
                 let data = {'token':token};
                 //把token存储到数据库
                 // UserModel.updateUser(token,data);

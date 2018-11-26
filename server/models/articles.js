@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const articleScheam = require('../schema/articles.js');
 const db = require('../config/db.js');
 const articles = mongoose.model('articles', articleScheam);
-// const _models = mongoose.model('_models',mongoose.Schema({
-//     name:String,
-//     password:String
-// }))
 const secret = require('../config/secret.json');
 const jwt = require('jsonwebtoken');
 const util = require('util');
@@ -50,10 +46,10 @@ class ArticleModel {
     static async updateArticle(data) {
         let conditions = { _id: mongoose.Types.ObjectId(data._id) };
             let setjson = {};
-            data.md_content && (setjson.md_content = data.md_content);
-            data.html_content && (setjson.html_content = data.html_content);
-            data.update_time && (setjson.update_time = data.update_time);
-            data.title && (setjson.title = data.title);
+            (data.md_content !== undefined) && (setjson.md_content = data.md_content);
+            (data.html_content !== undefined) && (setjson.html_content = data.html_content);
+            (data.update_time !== undefined) && (setjson.update_time = data.update_time);
+            (data.title !== undefined) && (setjson.title = data.title);
 
             let setupdate = { $set: setjson };
             return await articles.findByIdAndUpdate(conditions, setupdate, {new:true});

@@ -142,14 +142,9 @@ class ArticleController {
     static async uploadimg(ctx) {
         let file = ctx.request.file; // 获取上传文件
         // 创建可读流
-        console.log('ctx.request.files[image][path]',  ctx.request.files['image']['path'])
-        console.log('ctx.request.files[image]', ctx.request.files['image'])
-        console.log("ctx.request.files['image']['name']", ctx.request.files['image']['name'])
-        // console.log('__dirname', __dirname)
         const reader = fs.createReadStream(ctx.request.files['image']['path']);
         let filePath = `/shareSource/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
         let remotefilePath = `http://www.iwangcx.com:8887/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
-        console.log('filePath', filePath);
         // 创建可写流
         const upStream = fs.createWriteStream(filePath);
         // 可读流通过管道写入可写流
