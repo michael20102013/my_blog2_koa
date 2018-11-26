@@ -18,6 +18,7 @@ router.post('/edit/articles', ArticleController.createArticle);
 router.delete('/edit/articles', ArticleController.deleteArticle);
 router.put('/edit/articles', ArticleController.updateArticle);
 router.post('/query/articles', ArticleController.queryArticle);
+router.post('/edit/uploadimg', ArticleController.uploadimg);
 
 router.post('/test', UserController.test);
 

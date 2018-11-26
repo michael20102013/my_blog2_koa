@@ -6,11 +6,30 @@ const jwt = require('koa-jwt');
 const secret = require('./server/config/secret.json');
 const err = require('./server/middleware/error.js');
 const app = new Koa();
+const cors = require('koa2-cors'); // 跨域
+const koaBody = require('koa-body'); //解析上传文件的插件
 
 // app.use(jwt({secret: secret.sign}).unless({path: [/^\/api\/login/]}));
 app
     .use(logger())
-    .use(bodyParser())
+    // .use(bodyParser())
+    .use(koaBody({
+        multipart: true,
+        formidable: {
+            maxFileSize: 2000 * 1024 * 1024    // 设置上传文件大小最大限制，默认2M
+        }
+    }))
+    .use(cors({
+        origin: function (ctx) {
+            // console.log('ctx',ctx)
+            return '*';
+        },
+        exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+        maxAge: 5,
+        credentials: true,
+        allowMethods: ['GET', 'POST', 'DELETE'],
+        allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    }))
     .use(err())
     .use(jwt({secret: secret.sign}).unless({
         path: [
@@ -21,10 +40,27 @@ app
             /^\/api\/comment/
         ]
     }))
-    
+ 
+// app.use(koaBody({
+//     multipart: true,
+//     formidable: {
+//         maxFileSize: 200 * 1024 * 1024    // 设置上传文件大小最大限制，默认2M
+//     }
+// }))    
 app.use(router.routes())
    .use(router.allowedMethods())
 
+// app.use(cors({
+//     origin: function (ctx) {
+//         console.log('ctx',ctx)
+//         return '*';
+//     },
+//     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+//     maxAge: 5,
+//     credentials: true,
+//     allowMethods: ['GET', 'POST', 'DELETE'],
+//     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+// }));   
 app.listen(9527, ()=> {
 	console.log(`server running success`)
 })
