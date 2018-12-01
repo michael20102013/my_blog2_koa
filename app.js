@@ -17,16 +17,16 @@ app
             maxFileSize: 2000 * 1024 * 1024    // 设置上传文件大小最大限制，默认2M
         }
     }))
-    .use(cors({
-        origin: function (ctx) {
-            return '*';
-        },
-        exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
-        maxAge: 5,
-        credentials: true,
-        allowMethods: ['GET', 'POST', 'DELETE'],
-        allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    }))
+    // .use(cors({
+    //     origin: function (ctx) {
+    //         return '*';
+    //     },
+    //     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+    //     maxAge: 5,
+    //     credentials: true,
+    //     allowMethods: ['GET', 'POST', 'DELETE'],
+    //     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    // }))
     .use(err())
     .use(jwt({secret: secret.sign}).unless({
         path: [
