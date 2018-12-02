@@ -29,14 +29,8 @@ class ArticleModel {
      * @returns {Promise.<boolean>}
      */
     static async deleteArticle(id) {
-        let conditons = { id: id };
-        articles.remove(conditons, (err, res) => {
-            if (err) {
-                console.log('删除失败:', err);
-            } else {
-                console.log('删除成功：', res);
-            }
-        })
+        let _id = { _id: mongoose.Types.ObjectId(id) };
+        return articles.findByIdAndRemove(_id);
     }
     /**
      * 更新一条文章数据
@@ -120,7 +114,8 @@ class ArticleModel {
                 }
             }).limit(_limit).skip(_skip);
         }
-    }
+    }    
+     
 }
 module.exports = ArticleModel
 

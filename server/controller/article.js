@@ -16,20 +16,34 @@ class ArticleController {
             if(addArticle){
                 ctx.body = {
                     message:'文章添加成功',
-                    cc:0,
+                    cc:0
                 }         
             }else{
                 ctx.body = {
                     message:'文章添加失败',
-                    cc:1,
+                    cc:1
                 }                
             }
         }else{
             throw(ctx.throw(401));
         }        
     }
+    //删除文章
     static async deleteArticle (ctx) {
-        
+        const data = ctx.request.body;
+        let id = data._id
+        let articles = await ArticleModel.deleteArticle(id);
+        if (articles) {
+            ctx.body = {
+                message: '文章删除成功',    
+                cc: 0
+            }
+        } else {
+            ctx.body = {
+                message: '文章删除失败',
+                cc: 1
+            }
+        }
     }
     //更新文章
     static async updateArticle (ctx) {
@@ -154,6 +168,6 @@ class ArticleController {
             message: "文件上传成功",
             cc: 0
         }   
-    }
+    }   
 }
 module.exports = ArticleController
