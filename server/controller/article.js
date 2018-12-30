@@ -128,11 +128,22 @@ class ArticleController {
     }
     //查询文章
     static async queryArticle (ctx) {
-        const data = ctx.request.body;
+        let data = ctx.request.body;
+        if(typeof data === 'string') {
+            let obj = {};
+            let urlArr = data.split('&');
+            urlArr.forEach((item, index) => {
+                let paramArr = item.split('=');
+                obj[paramArr[0]] = parseInt(paramArr[1])
+            })
+            data = obj;
+        }else {
+            //do nothing
+        }
         let verifyTk = await commonObj.verifyToken(ctx);
         let id = data.id ? data.id : undefined;
-        let limit = data.limit ? data.limit : -1;
-        let skip = data.skip ? data.skip : 0; 
+        let limit = data.limit ? parseInt(data.limit) : -1;
+        let skip = data.skip ? data.skip : 0;  
         let articles = await ArticleModel.queryArticles(id, limit, skip);
         articles.forEach((item, index) => {
             item.user_view_count = item.user_view.length
