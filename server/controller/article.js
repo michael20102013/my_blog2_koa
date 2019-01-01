@@ -129,7 +129,6 @@ class ArticleController {
     //查询文章
     static async queryArticle (ctx) {
         let data = ctx.request.body;
-        console.log('data', data)
         if(typeof data === 'string') {
             let obj = {};
             let urlArr = data.split('&');
