@@ -165,20 +165,25 @@ class ArticleController {
     }
     //上传图片
     static async uploadimg(ctx) {
-        let file = ctx.request.file; // 获取上传文件
-        // 创建可读流
-        const reader = fs.createReadStream(ctx.request.files['image']['path']);
-        let filePath = `/shareSource/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
-        let remotefilePath = `http://www.iwangcx.com:8887/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
-        // 创建可写流
-        const upStream = fs.createWriteStream(filePath);
-        // 可读流通过管道写入可写流
-        reader.pipe(upStream);
-        return ctx.body = {
-            url: remotefilePath,
-            message: "文件上传成功",
-            cc: 0
-        }   
+        try {
+            let file = ctx.request.file; // 获取上传文件
+            // 创建可读流
+            const reader = fs.createReadStream(ctx.request.files['image']['path']);
+            let filePath = `/shareSource/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
+            let remotefilePath = `http://www.iwangcx.com:8887/img/my_blog_img` + `/${ctx.request.files['image']['name']}`;
+            // 创建可写流
+            const upStream = fs.createWriteStream(filePath);
+            // 可读流通过管道写入可写流
+            reader.pipe(upStream);
+            return ctx.body = {
+                url: remotefilePath,
+                message: "文件上传成功",
+                cc: 0
+            }   
+        }catch(err) {
+            console.log('err', err)
+            ctx.body = err
+        }
     }   
 }
 module.exports = ArticleController
