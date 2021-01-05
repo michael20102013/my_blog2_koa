@@ -16,7 +16,7 @@
     "mockdev": "concurrently \"npm run dev\" \"npm run mock\" \"nodemon app.js\""
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "concurrently": "^3.5.1",
     "es6-promise": "^4.2.4",
