@@ -20,7 +20,7 @@
     "bcryptjs": "^2.4.3",
     "concurrently": "^3.5.1",
     "es6-promise": "^4.2.4",
-    "jsonwebtoken": "^8.2.1",
+    "jsonwebtoken": "^9.0.0",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
     "koa-jwt": "^3.3.2",
